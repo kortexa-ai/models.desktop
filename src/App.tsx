@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ModelGroup } from './types';
-import { ModelCard } from './components/ModelCard';
+import { ModelCardV2 } from './components/ModelCardV2';
 import { Header } from './components/Header';
 import { Stats } from './components/Stats';
 import { ParticleBackground } from './components/ParticleBackground';
@@ -199,7 +199,7 @@ function App() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
               >
                 {filteredModels.map((model, index) => (
-                  <ModelCard
+                  <ModelCardV2
                     key={model.id}
                     model={model}
                     onDelete={handleDelete}
