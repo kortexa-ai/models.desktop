@@ -10,22 +10,22 @@ export interface ModelFile {
 
 export interface ModelGroup {
   id: string;
-  repo: string;  // Primary display name (remote repo or local folder)
-  subtitle?: string;  // File name for single files, file count for groups
+  repo: string;
+  subtitle?: string;
   files: ModelFile[];
   totalSize: number;
   sizeFormatted: string;
   source: 'huggingface' | 'llamacpp';
   type: 'gguf' | 'safetensors' | 'pytorch' | 'other' | 'mixed';
   lastModified: string;
-  fileListTooltip?: string;  // Comma-separated list of files for tooltip
+  fileListTooltip?: string;
 }
 
 declare global {
   interface Window {
     electronAPI?: {
       scanModels: () => Promise<ModelGroup[]>;
-      deleteModel: (paths: string[]) => Promise<boolean>;
+      deleteModel: (group: ModelGroup) => Promise<boolean>;
     };
   }
 }
