@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import logo from '../assets/logo.png';
 
 interface HeaderProps {
   onRefresh: () => void;
@@ -25,10 +26,12 @@ export function Header({ onRefresh, searchQuery, onSearchChange }: HeaderProps) 
             <div className="relative">
               {/* Animated ring */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 blur-sm opacity-50 animate-pulse" />
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-cyan-500 flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden">
+                <img 
+                  src={logo}
+                  alt="Models" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
             <div>
