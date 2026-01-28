@@ -1,0 +1,30 @@
+{
+  "name": "models-desktop",
+  "version": "1.0.0",
+  "description": "Models - Capacitor + Electron + React",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "setup": "npm run build && npx cap add @capacitor-community/electron",
+    "cap:sync": "npx cap sync",
+    "electron:dev": "npm run build && npx cap sync @capacitor-community/electron && npx cap open @capacitor-community/electron",
+    "electron:build": "npm run build && npx cap sync @capacitor-community/electron"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@capacitor-community/electron": "^5.0.0",
+    "@capacitor/cli": "^8.0.2",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}
