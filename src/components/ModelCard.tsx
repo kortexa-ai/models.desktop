@@ -43,7 +43,6 @@ const sourceIcons: Record<string, string> = {
 
 export function ModelCard({ model, onDelete, index }: ModelCardProps) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const fileCount = model.files.length;
   const isGroup = fileCount > 1;
   const config = typeConfig[model.type] || typeConfig.other;
@@ -58,25 +57,22 @@ export function ModelCard({ model, onDelete, index }: ModelCardProps) {
         ease: [0.4, 0, 0.2, 1]
       }}
       whileHover={{ y: -6 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="group relative"
+      className={showTooltip ? 'group relative z-30' : 'group relative z-0'}
     >
-      {/* Animated border glow */}
-      <motion.div
-        className="absolute -inset-px rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 opacity-0 group-hover:opacity-30 blur-sm transition-opacity duration-500"
-        animate={isHovered ? { opacity: 0.3 } : { opacity: 0 }}
-      />
-      
       {/* Card */}
-      <div className="relative glass rounded-2xl p-5 border border-white/5 overflow-hidden card-hover h-full flex flex-col">
-        {/* Type gradient background */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-50`} />
+      <div className="relative glass rounded-2xl border border-white/5 card-hover h-full flex flex-col">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+          {/* Type gradient background */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-50`} />
+          
+          {/* Shimmer on hover */}
+          <div className="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+        </div>
         
-        {/* Shimmer on hover */}
-        <div className="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        
-        <div className="relative flex-1 flex flex-col">
+        <div className="relative flex-1 flex flex-col p-5">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -119,12 +115,14 @@ export function ModelCard({ model, onDelete, index }: ModelCardProps) {
             )}
 
             {/* File count or single filename */}
-            <div className="relative">
+            <div
+              className="relative inline-flex flex-col items-start"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
               {isGroup ? (
                 <motion.button
                   className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-400 transition-colors"
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
                   whileHover={{ x: 2 }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -147,12 +145,16 @@ export function ModelCard({ model, onDelete, index }: ModelCardProps) {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute z-50 left-0 mt-2 p-3 glass rounded-xl border border-white/10 shadow-2xl max-w-xs"
+                    className="absolute left-0 top-full z-50 mt-2 flex min-w-[14rem] max-w-sm flex-col overflow-hidden rounded-xl border border-white/10 p-3 shadow-2xl glass"
+                    style={{ maxHeight: 'min(24rem, calc(100vh - 10rem))' }}
                   >
                     <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">Files in this model:</p>
-                    <div className="space-y-1">
+                    <div
+                      className="space-y-1 overflow-y-auto pr-1"
+                      style={{ maxHeight: 'min(20rem, calc(100vh - 13rem))' }}
+                    >
                       {model.files.map((file, i) => (
-                        <div key={i} className="text-xs text-gray-300 truncate">
+                        <div key={i} className="text-xs text-gray-300 break-all leading-relaxed">
                           {file.name}
                         </div>
                       ))}
@@ -174,9 +176,6 @@ export function ModelCard({ model, onDelete, index }: ModelCardProps) {
             </span>
           </div>
         </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
       </div>
     </motion.div>
   );

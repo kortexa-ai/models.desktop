@@ -12,6 +12,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'huggingface' | 'llamacpp'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'alphabetical' | 'size-desc'>('alphabetical');
 
   const loadModels = useCallback(async () => {
     setLoading(true);
@@ -55,13 +56,28 @@ function App() {
     }
   };
 
-  const filteredModels = models.filter(model => {
-    const matchesFilter = filter === 'all' || model.source === filter;
-    const matchesSearch = searchQuery === '' || 
-      model.repo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      model.subtitle?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const filteredModels = models
+    .filter((model) => {
+      const matchesFilter = filter === 'all' || model.source === filter;
+      const matchesSearch = searchQuery === '' ||
+        model.repo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        model.subtitle?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    })
+    .sort((left, right) => {
+      if (sortBy === 'size-desc') {
+        if (right.totalSize !== left.totalSize) {
+          return right.totalSize - left.totalSize;
+        }
+      }
+
+      const repoCompare = left.repo.localeCompare(right.repo, undefined, { sensitivity: 'base' });
+      if (repoCompare !== 0) {
+        return repoCompare;
+      }
+
+      return (left.subtitle ?? '').localeCompare(right.subtitle ?? '', undefined, { sensitivity: 'base' });
+    });
 
   const totalSize = models.reduce((acc, m) => acc + m.totalSize, 0);
   const hfModels = models.filter(m => m.source === 'huggingface');
@@ -97,40 +113,73 @@ function App() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex gap-2 mb-8"
+            className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between"
           >
-            {(['all', 'huggingface', 'llamacpp'] as const).map((f, i) => (
-              <motion.button
-                key={f}
-                onClick={() => setFilter(f)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + i * 0.05 }}
-                className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  filter === f
-                    ? 'text-white'
-                    : 'text-gray-500 hover:text-gray-300'
-                }`}
-              >
-                {filter === f && (
-                  <motion.div
-                    layoutId="activeFilter"
-                    className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 rounded-xl"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">
-                  {f === 'all' ? 'All Models' : f === 'huggingface' ? 'Hugging Face' : 'Llama.cpp'}
-                  <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                    filter === f ? 'bg-white/20' : 'bg-white/5'
-                  }`}>
-                    {f === 'all' ? models.length : f === 'huggingface' ? hfModels.length : llamaModels.length}
+            <div className="flex flex-wrap gap-2">
+              {(['all', 'huggingface', 'llamacpp'] as const).map((f, i) => (
+                <motion.button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
+                  className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    filter === f
+                      ? 'text-white'
+                      : 'text-gray-500 hover:text-gray-300'
+                  }`}
+                >
+                  {filter === f && (
+                    <motion.div
+                      layoutId="activeFilter"
+                      className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 rounded-xl"
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {f === 'all' ? 'All Models' : f === 'huggingface' ? 'Hugging Face' : 'Llama.cpp'}
+                    <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+                      filter === f ? 'bg-white/20' : 'bg-white/5'
+                    }`}>
+                      {f === 'all' ? models.length : f === 'huggingface' ? hfModels.length : llamaModels.length}
+                    </span>
                   </span>
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="relative w-full md:w-auto">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 rounded-xl blur opacity-60" />
+              <div className="relative flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 backdrop-blur-xl">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-gray-500">
+                  Sort
                 </span>
-              </motion.button>
-            ))}
+                <div className="relative min-w-[12rem]">
+                  <select
+                    value={sortBy}
+                    onChange={(event) => setSortBy(event.target.value as 'alphabetical' | 'size-desc')}
+                    className="w-full appearance-none bg-transparent pr-8 text-sm text-gray-200 focus:outline-none"
+                  >
+                    <option value="alphabetical" className="bg-slate-950 text-gray-100">
+                      Alphabetical
+                    </option>
+                    <option value="size-desc" className="bg-slate-950 text-gray-100">
+                      Size: Largest First
+                    </option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
           <AnimatePresence mode="wait">

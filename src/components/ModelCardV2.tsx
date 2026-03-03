@@ -23,20 +23,11 @@ export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group relative"
+      className={showTooltip ? 'relative z-30' : 'relative z-0'}
     >
-      {/* Animated gradient border glow */}
-      <div 
-        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #8b5cf6 100%)',
-          filter: 'blur(8px)',
-        }}
-      />
-      
       {/* Card with glass morphism */}
       <div 
-        className="relative rounded-2xl p-5 overflow-hidden"
+        className="relative rounded-2xl"
         style={{
           background: 'rgba(255, 255, 255, 0.03)',
           backdropFilter: 'blur(20px)',
@@ -44,15 +35,17 @@ export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
         }}
       >
-        {/* Inner gradient overlay */}
-        <div 
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 50%, rgba(139, 92, 246, 0.1) 100%)',
-          }}
-        />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+          {/* Inner gradient overlay */}
+          <div 
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 50%, rgba(139, 92, 246, 0.1) 100%)',
+            }}
+          />
+        </div>
         
-        <div className="relative">
+        <div className="relative p-5">
           {/* Header row: Icon + Delete button */}
           <div className="flex items-start justify-between mb-4">
             {/* Icon with gradient background */}
@@ -107,13 +100,15 @@ export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
             )}
 
             {/* Subtitle / File count */}
-            <div className="relative">
+            <div
+              className="relative inline-flex flex-col items-start"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
               {isGroup ? (
                 <button
                   className="text-sm flex items-center gap-1.5 transition-colors hover:text-indigo-400"
                   style={{ color: 'rgba(255, 255, 255, 0.5)' }}
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
                 >
                   <span 
                     className="w-1.5 h-1.5 rounded-full"
@@ -140,22 +135,26 @@ export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                    className="absolute z-50 left-0 mt-2 p-3 rounded-xl max-w-xs"
+                    className="absolute left-0 top-full z-50 mt-2 flex min-w-[14rem] max-w-sm flex-col overflow-hidden rounded-xl p-3"
                     style={{
                       background: 'rgba(20, 20, 30, 0.95)',
                       backdropFilter: 'blur(20px)',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+                      maxHeight: 'min(24rem, calc(100vh - 10rem))',
                     }}
                   >
                     <p className="text-[10px] uppercase tracking-wider mb-2" style={{ color: 'rgba(255, 255, 255, 0.4)' }}>
                       Files in this model:
                     </p>
-                    <div className="space-y-1">
+                    <div
+                      className="space-y-1 overflow-y-auto pr-1"
+                      style={{ maxHeight: 'min(20rem, calc(100vh - 13rem))' }}
+                    >
                       {model.files.map((file, i) => (
                         <div 
                           key={i} 
-                          className="text-xs truncate"
+                          className="text-xs break-all leading-relaxed"
                           style={{ color: 'rgba(255, 255, 255, 0.7)' }}
                         >
                           {file.name}
