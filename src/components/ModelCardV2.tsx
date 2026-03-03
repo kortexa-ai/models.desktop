@@ -8,14 +8,6 @@ interface ModelCardV2Props {
   index: number;
 }
 
-const typeConfig: Record<string, { gradient: string; label: string }> = {
-  gguf: { gradient: 'from-green-400 to-emerald-500', label: 'GGUF' },
-  safetensors: { gradient: 'from-yellow-400 to-orange-500', label: 'Safe' },
-  pytorch: { gradient: 'from-red-400 to-pink-500', label: 'PyTorch' },
-  other: { gradient: 'from-gray-400 to-gray-500', label: 'Other' },
-  mixed: { gradient: 'from-indigo-400 to-purple-500', label: 'Mixed' },
-};
-
 const sourceIcons: Record<string, string> = {
   huggingface: '🤗',
   llamacpp: '🦙',
@@ -23,18 +15,14 @@ const sourceIcons: Record<string, string> = {
 
 export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const fileCount = model.files.length;
   const isGroup = fileCount > 1;
-  const config = typeConfig[model.type] || typeConfig.other;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
       className="group relative"
     >
       {/* Animated gradient border glow */}
@@ -107,6 +95,16 @@ export function ModelCardV2({ model, onDelete, index }: ModelCardV2Props) {
             >
               {model.repo}
             </h3>
+
+            {model.subtitle && (
+              <p
+                className="text-xs mb-2 truncate"
+                style={{ color: 'rgba(255, 255, 255, 0.45)' }}
+                title={model.subtitle}
+              >
+                {model.subtitle}
+              </p>
+            )}
 
             {/* Subtitle / File count */}
             <div className="relative">

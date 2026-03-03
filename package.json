@@ -21,6 +21,8 @@
   "devDependencies": {
     "@capacitor-community/electron": "^5.0.0",
     "@capacitor/cli": "^8.0.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",

@@ -39,10 +39,11 @@ function App() {
     if (!window.electronAPI) return;
     
     const fileCount = model.files.length;
+    const modelLabel = model.subtitle ? `${model.repo} (${model.subtitle})` : model.repo;
     const confirmed = confirm(
-      `Are you sure you want to delete "${model.repo}"?\n\n` +
-      `This will delete ${fileCount} file${fileCount > 1 ? 's' : ''} ` +
-      `(${model.sizeFormatted}).`
+      `Are you sure you want to delete "${modelLabel}"?\n\n` +
+      `This will remove ${fileCount} discovered file${fileCount > 1 ? 's' : ''} ` +
+      `and related cache data (${model.sizeFormatted}).`
     );
     if (!confirmed) return;
 

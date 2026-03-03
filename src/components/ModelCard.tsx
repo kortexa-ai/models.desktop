@@ -112,6 +112,12 @@ export function ModelCard({ model, onDelete, index }: ModelCardProps) {
               {model.repo}
             </h3>
 
+            {model.subtitle && (
+              <p className="text-xs text-gray-500 mb-2 truncate" title={model.subtitle}>
+                {model.subtitle}
+              </p>
+            )}
+
             {/* File count or single filename */}
             <div className="relative">
               {isGroup ? (

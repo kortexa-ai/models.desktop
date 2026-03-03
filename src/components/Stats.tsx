@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
 interface StatsProps {
   totalModels: number;
@@ -15,7 +15,7 @@ function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -25,7 +25,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
@@ -73,7 +73,7 @@ export function Stats({ totalModels, totalSize, hfCount, llamaCount }: StatsProp
       animate="visible"
       className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         <motion.div
           key={item.label}
           variants={itemVariants}

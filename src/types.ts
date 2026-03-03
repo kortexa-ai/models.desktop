@@ -19,6 +19,7 @@ export interface ModelGroup {
   type: 'gguf' | 'safetensors' | 'pytorch' | 'other' | 'mixed';
   lastModified: string;
   fileListTooltip?: string;
+  deletePaths?: string[];
 }
 
 declare global {
