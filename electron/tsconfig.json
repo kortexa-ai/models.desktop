@@ -5,9 +5,10 @@
     "outDir": "./build",
     "importHelpers": true,
     "target": "ES2017",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "esModuleInterop": true,
+    "strict": false,
     "typeRoots": ["./node_modules/@types"],
     "allowJs": true,
     "rootDir": "."
