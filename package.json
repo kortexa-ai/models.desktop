@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Models - Capacitor + Electron + React",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "build": "vite build",
@@ -14,7 +15,7 @@
   },
   "dependencies": {
     "@capacitor/core": "^8.5.0",
-    "framer-motion": "^13.0.0",
+    "framer-motion": "^13.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -29,6 +30,11 @@
     "postcss": "^8.5.26",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.2.1"
+    "vite": "^8.2.2"
+  },
+  "overrides": {
+    "xcode": {
+      "uuid": "11.1.1"
+    }
   }
 }
